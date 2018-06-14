@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
 
             type = firstsector[PARTONE + (partnum*16) + PARTTYPE];
             lba = *((unsigned int*)&firstsector[PARTONE + (partnum*16) + PARTLBA]);
-            printf("%s\t%d\t%s\t%d\t%d\t\t%d\n",diskname,partnum,yesno[active],type,lba%alignment,lba);
+            printf("%s\t%d\t%s\t%d\t%d\t\t%d\n",diskname,partnum,yesno[active],type,(alignment - (lba%alignment))%alignment,lba);
         }
 
     }
@@ -99,7 +99,7 @@ unsigned int ReadMBR(const char* diskObject, unsigned char* buffer)
     disk = CreateFile(diskObject, GENERIC_READ, FILE_SHARE_VALID_FLAGS, 0, OPEN_EXISTING, 0, 0);
     if (disk == INVALID_HANDLE_VALUE)
     {
-       if (GetLastError() == 5) printf("\t%s\t%s\n",diskObject,"Access denied!");
+       if (GetLastError() == 5) printf("%s\t%s\n",diskObject,"Access denied!");
        CloseHandle(disk);
        return 0;
     }
